@@ -1,32 +1,6 @@
-organization := "com.example"
 
-name := "$name$"
+# both of these are erroneously asked from the user (but final result is not expanded);
+# second one causes result to fail because of the dot
+shouldNotExpand1="\$SHOULD_NOT_ASK_BUT_WONT_EXPAND_SO_ITS_KINDA_OK \$THIS_IS_ALSO_NEEDED"
+shouldNotExpand2="\$THIS_ALSO_FAILS_BECAUSE_IT_HAS_A_DOT_IN_IT. \$THIS_IS_ALSO_NEEDED"
 
-version := "$version$"
-
-scalaVersion := "$scala_version$"
-
-val unusedWarnings = (
-  "-Ywarn-unused" ::
-  "-Ywarn-unused-import" ::
-  Nil
-)
-
-scalacOptions ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)){
-  case Some((2, v)) if v >= 11 => unusedWarnings
-}.toList.flatten
-
-Seq(Compile, Test).flatMap(c =>
-  scalacOptions in (c, console) --= unusedWarnings
-)
-
-scalacOptions ++= "-deprecation" :: "unchecked" :: "-feature" :: Nil
-
-val unfilteredVersion = "$unfiltered_version$"
-
-libraryDependencies ++= Seq(
-  "ws.unfiltered" %% "unfiltered-directives" % unfilteredVersion,
-  "ws.unfiltered" %% "unfiltered-filter" % unfilteredVersion,
-  "ws.unfiltered" %% "unfiltered-jetty" % unfilteredVersion,
-  "ws.unfiltered" %% "unfiltered-specs2" % unfilteredVersion % "test"
-)
